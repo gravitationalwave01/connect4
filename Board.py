@@ -10,12 +10,12 @@ class Board:
         self.num_to_win = num_to_win
 
     def find_top(self, col):
-
+        '''For a given column, returns the index of the topmost empty cell'''
         for i, cell in enumerate(self.cells[col]):
-            if cell == Cell.EMPTY:
-                return i
+            if cell != Cell.EMPTY:
+                return i - 1
 
-        return self.height
+        return self.height - 1
 
     def move(self, col, color):
 
@@ -23,7 +23,7 @@ class Board:
             raise ValueError('Illegal move')
 
         row = self.find_top(col)
-        if row == self.height:
+        if row == -1:
             raise ValueError('Illegal move')
 
         self.cells[col, row] = color

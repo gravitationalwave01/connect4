@@ -12,7 +12,8 @@ def test_find_top_empty_board(boardsize, col):
     b = Board(*boardsize)
     print(b.cells)
     row = b.find_top(col)
-    assert row == 0
+    expected = b.height - 1
+    assert row == expected
 
 @pytest.mark.parametrize("board_size,up_to",[
     ((2, 2), 0),
@@ -21,10 +22,12 @@ def test_find_top_empty_board(boardsize, col):
 def test_find_top_with_col_filled(board_size, up_to):
     b = Board(*board_size)
     for i in range(up_to):
-        b.cells[0, i] = Cell.BLACK
+        row_to_populate = b.height - i - 1
+        b.cells[0, row_to_populate] = Cell.BLACK
 
     row = b.find_top(0)
-    assert row == up_to
+    expected = b.height - up_to - 1
+    assert row == expected
 
 @pytest.mark.parametrize("board_size,num_moves",[
     ((2, 2), 0),
@@ -33,8 +36,10 @@ def test_find_top_with_col_filled(board_size, up_to):
 def test_move_one_square(board_size, num_moves):
     b = Board(*board_size)
     for i in range(num_moves):
-        b.move(0, Cell.BLACK)
-        assert b.cells[0, i] == Cell.BLACK
+        col, row = b.move(0, Cell.BLACK)
+        expected_row = b.height - i - 1
+        assert row == expected_row
+        assert b.cells[0, expected_row] == Cell.BLACK
 
 def test_move_too_tall_move_raises_exception():
     b = Board(2, 2)
