@@ -10,7 +10,6 @@ import numpy as np
 ])
 def test_find_top_empty_board(boardsize, col):
     b = Board(*boardsize)
-    print(b.cells)
     row = b.find_top(col)
     expected = b.height - 1
     assert row == expected
@@ -60,6 +59,7 @@ def test_move_too_wide_move_raises_exception():
 @pytest.mark.parametrize("arr,color,num,expected",[
     (['R', 'R', 'B'], 'R', 2, True),
     (['B', 'R', 'B'], 'R', 2, False),
+    (['B', 'R', 'B'], 'B', 2, False),
     (['B', 'R', 'B'], 'R', 1, True),
     (['B', 'B', 'B'], 'B', 3, True),
     (['W', 'R', 'B'], 'R', 2, False),
@@ -68,7 +68,6 @@ def test_check_for_n_in_row(arr, color, num, expected):
     b = Board(2, 2, num)
     res = b.check_for_connect(arr, color)
     assert res == expected
-
 
 def test_check_winning_move_main_diagonal_win():
     b = Board(2, 2, 2)
