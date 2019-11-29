@@ -33,7 +33,7 @@ class Board:
 
         self.cells[col, row] = color
 
-        return col, row
+        return row
 
     def check_for_connect(self, arr, color):
         '''
@@ -59,23 +59,26 @@ class Board:
 
         # check up/down:
         if self.check_for_connect(self.cells[col, :], winner):
-            print('up-down found a win!!')
             return True
 
         # check left/right
         if self.check_for_connect(self.cells[:, row], winner):
-            print('left-right found a win!!')
             return True
 
         # check second diagonal
         if self.check_for_connect(np.diag(self.cells, k=row - col), winner):
-            print(f'second diag found a win!! {np.diag(self.cells, k=row - col)}')
             return True
 
         # check main diagonal
         if self.check_for_connect(np.diag(np.fliplr(self.cells), k=self.width-(col+row+1)), winner):
-            print(f'first diag found a win!! {np.diag(np.fliplr(self.cells), k=self.width-(col+row+1))}')
             return True
 
         return False
+
+    def __str__(self):
+        ans = ''
+        for row in self.cells:
+            for cell in row:
+                ans += str(cell.value)
+        return ans
 

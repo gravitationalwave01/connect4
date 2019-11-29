@@ -35,7 +35,7 @@ def test_find_top_with_col_filled(board_size, up_to):
 def test_move_one_square(board_size, num_moves):
     b = Board(*board_size)
     for i in range(num_moves):
-        col, row = b.move(0, Cell.BLACK)
+        row = b.move(0, Cell.BLACK)
         expected_row = b.height - i - 1
         assert row == expected_row
         assert b.cells[0, expected_row] == Cell.BLACK
