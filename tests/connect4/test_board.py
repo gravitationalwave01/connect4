@@ -1,7 +1,6 @@
 import pytest
-from Cell import Cell
-from Board import Board
-import numpy as np
+from connect4.Cell import Cell
+from connect4.Board import Board
 
 @pytest.mark.parametrize("boardsize,col",[
     ((2, 2), 0),

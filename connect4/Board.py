@@ -1,5 +1,5 @@
 import numpy as np
-from Cell import Cell
+from connect4.Cell import Cell
 
 class Board:
 

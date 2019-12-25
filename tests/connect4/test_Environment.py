@@ -1,5 +1,5 @@
-from Environment import Environment
-from Cell import Cell
+from connect4.Environment import Environment
+from connect4.Cell import Cell
 import pytest
 
 def test_get_state_black_replaced_with_M():

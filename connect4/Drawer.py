@@ -1,5 +1,5 @@
 import pygame
-from Board import Board
+from connect4.Board import Board
 
 class Drawer:
 

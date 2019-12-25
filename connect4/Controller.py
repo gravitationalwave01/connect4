@@ -1,8 +1,8 @@
 import pygame
-from Cell import Cell
-from Drawer import Drawer
-from Environment import Environment
-from player.Player import HumanPlayer, AIPlayer
+from connect4.Cell import Cell
+from connect4.Drawer import Drawer
+from connect4.Environment import Environment
+from connect4.player.Player import HumanPlayer, AIPlayer
 from enum import Enum
 import pickle
 import os

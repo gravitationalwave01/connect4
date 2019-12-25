@@ -1,6 +1,5 @@
-from Board import Board
-from Cell import Cell
-from typing import Tuple
+from connect4.Board import Board
+from connect4.Cell import Cell
 
 class Environment(object):
     '''

@@ -1,32 +1,32 @@
-from Controller import Controller, GameMode
-from Player import HumanPlayer, AIPlayer
+from connect4.Controller import Controller
+from connect4.player.Player import HumanPlayer, AIPlayer
 
 import pytest
 from mock import patch
 
-@patch('Controller.pygame', autospec=True)
-@patch('Controller.Drawer', autospec=True)
+@patch('connect4.Controller.pygame', autospec=True)
+@patch('connect4.Controller.Drawer', autospec=True)
 def test_initialization_with_0_human_players(drawer_mock, pygame_mock):
     c = Controller(num_humans=0)
     assert isinstance(c.player1, AIPlayer)
     assert isinstance(c.player2, AIPlayer)
 
-@patch('Controller.pygame', autospec=True)
-@patch('Controller.Drawer', autospec=True)
+@patch('connect4.Controller.pygame', autospec=True)
+@patch('connect4.Controller.Drawer', autospec=True)
 def test_initialization_with_1_human_players(drawer_mock, pygame_mock):
     c = Controller(num_humans=1)
     assert isinstance(c.player1, HumanPlayer)
     assert isinstance(c.player2, AIPlayer)
 
-@patch('Controller.pygame', autospec=True)
-@patch('Controller.Drawer', autospec=True)
+@patch('connect4.Controller.pygame', autospec=True)
+@patch('connect4.Controller.Drawer', autospec=True)
 def test_initialization_with_2_human_players(drawer_mock, pygame_mock):
     c = Controller(num_humans=2)
     assert isinstance(c.player1, HumanPlayer)
     assert isinstance(c.player2, HumanPlayer)
 
-@patch('Controller.pygame', autospec=True)
-@patch('Controller.Drawer', autospec=True)
+@patch('connect4.Controller.pygame', autospec=True)
+@patch('connect4.Controller.Drawer', autospec=True)
 @pytest.mark.parametrize("num_human_players", [
     (0.1),
     (-1),
