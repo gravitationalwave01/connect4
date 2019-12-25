@@ -2,7 +2,8 @@ import pygame
 from connect4.Cell import Cell
 from connect4.Drawer import Drawer
 from connect4.Environment import Environment
-from connect4.player.Player import HumanPlayer, AIPlayer
+from connect4.player.RandomAIPlayer import RandomAIPlayer
+from connect4.player.HumanPlayer import HumanPlayer
 from enum import Enum
 import pickle
 import os
@@ -20,13 +21,13 @@ class Controller(object):
         self.history = []
         if num_humans == 0:
             self.mode = GameMode.AI_AI
-            self.player1 = AIPlayer()
-            self.player2 = AIPlayer()
+            self.player1 = RandomAIPlayer(num_cols=board_w)
+            self.player2 = RandomAIPlayer(num_cols=board_w)
             self.use_gui = False
         elif num_humans == 1:
             self.mode = GameMode.HUMAN_AI
             self.player1 = HumanPlayer()
-            self.player2 = AIPlayer()
+            self.player2 = RandomAIPlayer(num_cols=board_w)
             self.use_gui = True
         elif num_humans == 2:
             self.mode = GameMode.HUMAN_HUMAN
