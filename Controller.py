@@ -1,127 +1,67 @@
 import pygame
-import sys
-from Board import Board
 from Cell import Cell
 from Drawer import Drawer
-from AI import DummyAI, QLearningAI
-import pickle
-import time
-import os
-from copy import deepcopy
+from Environment import Environment
+from Player import HumanPlayer, AIPlayer
+from enum import Enum
 
-def process_key(event):
-    if event.key == pygame.K_1:
-        return 0
-    if event.key == pygame.K_2:
-        return 1
-    if event.key == pygame.K_3:
-        return 2
-    if event.key == pygame.K_4:
-        return 3
-    if event.key == pygame.K_5:
-        return 4
-    if event.key == pygame.K_6:
-        return 5
-    if event.key == pygame.K_7:
-        return 6
-    if event.key == pygame.K_8:
-        return 7
-    if event.key == pygame.K_9:
-        return 8
+class GameMode(Enum):
+    HUMAN_HUMAN = 0
+    HUMAN_AI = 1
+    AI_AI = 2
 
-    raise ValueError('Invalid key')
+class Controller(object):
+    def __init__(self, num_humans: int, board_w=7, board_h=7, num_to_win=4):
+        self.env = Environment(board_w=board_w, board_h=board_h, num_to_win=num_to_win)
+        if num_humans == 0:
+            self.mode = GameMode.AI_AI
+            self.player1 = AIPlayer()
+            self.player2 = AIPlayer()
+            self.use_gui = False
+        elif num_humans == 1:
+            self.mode = GameMode.HUMAN_AI
+            self.player1 = HumanPlayer()
+            self.player2 = AIPlayer()
+            self.use_gui = True
+        elif num_humans == 2:
+            self.mode = GameMode.HUMAN_HUMAN
+            self.player1 = HumanPlayer()
+            self.player2 = HumanPlayer()
+            self.use_gui = True
+        else:
+            raise ValueError(f'Number of human players must be 0, 1, or 2. You specified {num_humans}')
+
+        if self.use_gui:
+            pygame.init()
+            self.drawer = Drawer()
+            self.drawer.draw_board(self.env.b, pygame.Color('gray'))
+
+    def _one_move(self):
+        cur_state = self.env.get_state()
+        if self.env.cur_player == Cell.RED:
+            move = self.player1.move(cur_state)
+        else:
+            move = self.player2.move(cur_state)
+
+        _ = self.env.take_action(move)  # result of the move is ignored
+
+        if self.use_gui:
+            col, row = self.env.last_move
+            player = self.env.cur_player
+            self.drawer.draw_cell(col, row, player, update=True)
 
 
+    def play(self):
+        while not self.env.is_game_over:
+            self._one_move()
+
+        # display game over
+        if self.use_gui:
+            winner = self.env.cur_player.name
+            self.drawer.show_message(f'Congratulations! Player {winner} wins!')
 
 
 if __name__ == "__main__":
 
-    pygame.init()
-    use_ai = True
-    train = True
-    load_saved = True
-
-    board_h = 7
-    board_w = 7
-
-    b = Board(board_w, board_h, 4)
-    drawer = Drawer()
-    drawer.draw_board(b, pygame.Color('gray'))
-
-    cur_player = Cell.BLACK
-
-    game_active = True
-
-    if use_ai:
-        if load_saved:
-            # get most recent version of model, based on filename
-            files = os.listdir('data/')
-            stamps = [int(fname.split('_')[1][:-4]) for fname in files]
-            newest_model_fname = f'qlearning_{max(stamps)}.pkl'
-            with open('data/'+newest_model_fname, 'rb') as f:
-                ai = pickle.load(f)
-        else:
-            ai = QLearningAI(b)
-
-    if train:
-        second_ai = deepcopy(ai)
-
-    counter = 0
-    while game_active:
-        print(f'making move {counter}')
-        counter+=1
-        time.sleep(0.5)
-        col = None
-        ai_turn = use_ai and cur_player == Cell.RED
-        if ai_turn:
-            col = ai.move(b)
-        elif train:
-            col = second_ai.move(b)
-        else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                if event.type != pygame.KEYDOWN:
-                    continue
-
-                try:
-                    col = process_key(event)
-                    break  # only process one valid move from user
-                except ValueError as e:
-                    drawer.show_message(f'{str(e)}')
-                    continue
-
-        if col is None:
-            continue
-
-        try:
-            row = b.move(col, cur_player)
-        except ValueError as e:
-            drawer.show_message(f'{str(e)}')
-            if ai_turn:
-                ai.update(b, win=False, illegal=True)
-            continue
-
-        drawer.draw_cell(col, row, cur_player, True)
-        game_won = b.check_winning_move(col, row)
-        if ai_turn:
-            ai.update(b, win=game_won, illegal=False)
-
-        if game_won:
-            winner = cur_player.name
-            drawer.show_message(f'Congratulations! Player {winner} wins!')
-            game_active = False
-
-            # save model
-            stamp = int(time.time())
-            fname = f'qlearning_{stamp}.pkl'
-            with open('data/' + fname, 'wb') as f:
-                pickle.dump(ai, f)
-
-        # change current player
-        if cur_player == Cell.BLACK:
-            cur_player = Cell.RED
-        else:
-            cur_player = Cell.BLACK
+    controller = Controller(num_humans=2)
+    controller.play()

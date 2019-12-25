@@ -8,6 +8,10 @@ class Board:
         self.height = height
         self.cells = np.full((width, height), Cell.EMPTY)
         self.num_to_win = num_to_win
+        self.last_move = None  # tuple (row, col) representing the most recent move
+
+    def get_num_cells(self):
+        return self.cells.size
 
     def find_top(self, col):
         '''
@@ -32,6 +36,7 @@ class Board:
             raise ValueError('Illegal move')
 
         self.cells[col, row] = color
+        self.last_move = (col, row)
 
         return row
 
@@ -77,8 +82,7 @@ class Board:
 
     def __str__(self):
         ans = ''
-        for row in self.cells:
-            for cell in row:
+        for col in self.cells:
+            for cell in col:
                 ans += str(cell.value)
         return ans
-

@@ -1,6 +1,7 @@
 import pygame
 from Board import Board
 
+
 class Drawer:
 
     def __init__(self, cell_w=30, cell_h=30, margin=5, display_w=640, display_h=480):

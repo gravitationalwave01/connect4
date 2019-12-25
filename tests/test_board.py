@@ -96,3 +96,13 @@ def test_check_winning_off_main_diagonal_win():
     b.cells[1, 2] = Cell.BLACK
     assert b.check_winning_move(0, 1)
     assert b.check_winning_move(1, 2)
+
+
+def test_string_representation_complex_case():
+    b = Board(2, 2, 2)
+    b.move(0, Cell.BLACK)
+    b.move(1, Cell.RED)
+    b.move(0, Cell.BLACK)
+    b_str = str(b)
+    expected = str(Cell.BLACK.value) + str(Cell.BLACK.value) + str(Cell.EMPTY.value) + str(Cell.RED.value)
+    assert b_str == expected
