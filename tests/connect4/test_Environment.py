@@ -101,6 +101,12 @@ def test_reset_new_board_num_moves_reset():
     env.reset()
     assert env.num_moves == 0
 
+def test_reset_history_cleared():
+    env = Environment(2, 2, 2)
+    env.take_action(0)
+    env.reset()
+    assert env.history == []
+
 @pytest.mark.parametrize("board_w,board_h",[
     (2, 2),
     (2, 3),
@@ -110,3 +116,39 @@ def test_reset_new_board_num_moves_reset():
 def test_num_cells_computed_correctly(board_w, board_h):
     env = Environment(board_w, board_h, 2)
     assert env.get_num_cells() == board_w * board_h
+
+
+def test_history_has_same_number_elements_as_moves():
+    env = Environment(2, 2, 2)
+    env.take_action(0)
+    assert len(env.history) == 1
+
+    env.take_action(0)
+    assert len(env.history) == 2
+
+
+def test_history_correctly_represents_history_after_one_move():
+    env = Environment(2, 2, 2)
+    action = 0
+    start_state = env.get_state()
+    reward = env.take_action(action)
+
+    assert env.history == [(start_state, action, reward)]
+
+
+def test_history_correctly_represents_history_after_several_moves():
+    env = Environment(2, 2, 2)
+
+    # make some moves
+    env.take_action(0)
+    env.take_action(1)
+
+    # make one more move
+    action = 0
+    most_recent_state = env.get_state()
+    reward = env.take_action(action)
+
+    # check that history correctly appended to
+    last_move = env.history[-1]
+    assert last_move == (most_recent_state, action, reward)
+

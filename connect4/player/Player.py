@@ -1,6 +1,6 @@
 import pygame
 from abc import ABC
-3
+
 def process_key(event: pygame.event) -> int:
     '''
     Given a pygame event, determine whether the event is a keyboard number press

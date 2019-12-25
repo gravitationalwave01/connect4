@@ -2,8 +2,11 @@ import pygame
 from Cell import Cell
 from Drawer import Drawer
 from Environment import Environment
-from Player import HumanPlayer, AIPlayer
+from player.Player import HumanPlayer, AIPlayer
 from enum import Enum
+import pickle
+import os
+import time
 
 class GameMode(Enum):
     HUMAN_HUMAN = 0
@@ -11,8 +14,10 @@ class GameMode(Enum):
     AI_AI = 2
 
 class Controller(object):
-    def __init__(self, num_humans: int, board_w=7, board_h=7, num_to_win=4):
+    def __init__(self, num_humans=2, board_w=7, board_h=7, num_to_win=4, num_games=1):
         self.env = Environment(board_w=board_w, board_h=board_h, num_to_win=num_to_win)
+        self.num_games = num_games
+        self.history = []
         if num_humans == 0:
             self.mode = GameMode.AI_AI
             self.player1 = AIPlayer()
@@ -50,8 +55,7 @@ class Controller(object):
             player = self.env.cur_player
             self.drawer.draw_cell(col, row, player, update=True)
 
-
-    def play(self):
+    def play_one_game(self):
         while not self.env.is_game_over:
             self._one_move()
 
@@ -59,9 +63,28 @@ class Controller(object):
         if self.use_gui:
             winner = self.env.cur_player.name
             self.drawer.show_message(f'Congratulations! Player {winner} wins!')
+            pygame.time.delay(2000)
+
+    def play(self):
+        for i in range(self.num_games):
+            self.play_one_game()
+            self.history += self.env.history
+            self.env.reset()
+
+            # reset the GUI
+            if self.use_gui:
+                self.drawer.draw_board(self.env.b, pygame.Color('gray'))
+                self.drawer.clear_message()
+
+        if self.mode == GameMode.AI_AI:
+            fname = f'gamelog_{round(time.time())}.txt'
+            fname = os.path.join('data', fname)
+            with open(fname, 'wb') as f:
+                pickle.dump(self.history, f)
 
 
 if __name__ == "__main__":
 
-    controller = Controller(num_humans=2)
+    # controller = Controller(board_w=3, board_h=3, num_to_win=2, num_humans=0, num_games=4)
+    controller = Controller(num_humans=2, num_games=2)
     controller.play()

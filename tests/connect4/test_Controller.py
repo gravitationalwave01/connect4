@@ -36,4 +36,3 @@ def test_initialization_invalid_number_human_players_raises_exception(drawer_moc
     with pytest.raises(ValueError) as e:
         Controller(num_humans=num_human_players)
         assert str(num_human_players) in str(e)
-

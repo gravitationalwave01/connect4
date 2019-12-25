@@ -16,6 +16,7 @@ class Environment(object):
         self.is_game_over = False
         self.num_moves: int = 0
         self.last_move = None  # last move in game (col, row)
+        self.history = []  # history will be a list of tuples (state, action, reward)
 
     def get_num_cells(self) -> int:
         return self.b.get_num_cells()
@@ -26,12 +27,16 @@ class Environment(object):
         self.cur_player = Cell.RED
         self.is_game_over = False
         self.num_moves = 0
+        self.last_move = None
+        self.history = []
 
-    def take_action(self, col: int) -> float:
+    def _actually_take_action(self, col: int) -> float:
         '''
         Moves the current player into the column specified by 'col'
         Returns the score of the last move: -1 if illegal, 1 if winning, 0 otherwise
         '''
+        state = self.get_state()
+
         try:
             row = self.b.move(col, self.cur_player)
         except ValueError:  # illegal moves cause game over
@@ -52,6 +57,17 @@ class Environment(object):
             return 1
 
         return 0
+
+    def take_action(self, col: int) -> float:
+        '''
+        Moves the current player into the specified column.
+        Also records history for the move
+        Returns the reward for making such a move
+        '''
+        state = self.get_state()
+        reward = self._actually_take_action(col)
+        self.history.append((state, col, reward))
+        return reward
 
     def get_state(self) -> str:
         '''
