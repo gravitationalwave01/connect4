@@ -3,6 +3,7 @@ from connect4.Cell import Cell
 from connect4.Drawer import Drawer
 from connect4.Environment import Environment
 from connect4.player.RandomAIPlayer import RandomAIPlayer
+from connect4.player.DeepQLearningPlayer import DeepQLearningPlayer
 from connect4.player.HumanPlayer import HumanPlayer
 from enum import Enum
 import pickle
@@ -27,7 +28,7 @@ class Controller(object):
         elif num_humans == 1:
             self.mode = GameMode.HUMAN_AI
             self.player1 = HumanPlayer()
-            self.player2 = RandomAIPlayer(num_cols=board_w)
+            self.player2 = DeepQLearningPlayer(num_cols=board_w)
             self.use_gui = True
         elif num_humans == 2:
             self.mode = GameMode.HUMAN_HUMAN
@@ -87,5 +88,5 @@ class Controller(object):
 if __name__ == "__main__":
 
     # controller = Controller(board_w=3, board_h=3, num_to_win=2, num_humans=0, num_games=4)
-    controller = Controller(num_humans=2, num_games=2)
+    controller = Controller(num_humans=1, num_games=1)
     controller.play()
