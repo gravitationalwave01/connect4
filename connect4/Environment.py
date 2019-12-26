@@ -1,5 +1,6 @@
 from connect4.Board import Board
 from connect4.Cell import Cell
+from profilehooks import profile
 
 class Environment(object):
     '''
@@ -34,8 +35,6 @@ class Environment(object):
         Moves the current player into the column specified by 'col'
         Returns the score of the last move: -1 if illegal, 1 if winning, 0 otherwise
         '''
-        state = self.get_state()
-
         try:
             row = self.b.move(col, self.cur_player)
         except ValueError:  # illegal moves cause game over

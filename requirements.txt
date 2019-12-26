@@ -5,3 +5,4 @@ pytest-mock>=1.12
 mock>=3.0
 keras>=2.3
 tensorflow>=2.0
+profilehooks>=1.11

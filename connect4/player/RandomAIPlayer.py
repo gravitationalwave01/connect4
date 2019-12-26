@@ -1,5 +1,6 @@
 from connect4.player.Player import Player
 import numpy as np
+from profilehooks import profile
 
 class RandomAIPlayer(Player):
     '''

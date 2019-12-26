@@ -7,6 +7,7 @@ from connect4.player.DeepQLearningPlayer import DeepQLearningPlayer
 from connect4.player.HumanPlayer import HumanPlayer
 from enum import Enum
 import pickle
+from profilehooks import profile
 import os
 import time
 
@@ -57,6 +58,7 @@ class Controller(object):
             player = self.env.cur_player
             self.drawer.draw_cell(col, row, player, update=True)
 
+    @profile
     def play_one_game(self):
         while not self.env.is_game_over:
             self._one_move()
@@ -88,5 +90,5 @@ class Controller(object):
 if __name__ == "__main__":
 
     # controller = Controller(board_w=3, board_h=3, num_to_win=2, num_humans=0, num_games=4)
-    controller = Controller(num_humans=1, num_games=1)
+    controller = Controller(num_humans=0, num_games=10000)
     controller.play()
